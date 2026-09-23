@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus EventHub</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>🚀 Campus EventHub</h1>
+    <p>Smart Event Registration Portal</p>
+</header>
+
+<main class="container">
+
+    <!-- AI Workshop -->
+    <div class="card">
+
+        <div class="event-icon">🤖</div>
+
+        <h2>AI Workshop</h2>
+
+        <p>Learn Machine Learning and Generative AI</p>
+
+        <p>
+            Seats Left:
+            <strong id="ai-seats">20</strong>
+        </p>
+
+        <button onclick="openForm('ai-workshop', 'AI Workshop')">
+            Register
+        </button>
+
+    </div>
+
+
+    <!-- Cloud Computing -->
+    <div class="card">
+
+        <div class="event-icon">☁️</div>
+
+        <h2>Cloud Computing</h2>
+
+        <p>Learn AWS, Azure and DevOps</p>
+
+        <p>
+            Seats Left:
+            <strong id="cloud-seats">15</strong>
+        </p>
+
+        <button onclick="openForm('cloud-computing', 'Cloud Computing')">
+            Register
+        </button>
+
+    </div>
+
+
+    <!-- Hackathon -->
+    <div class="card">
+
+        <div class="event-icon">💻</div>
+
+        <h2>Hackathon 2026</h2>
+
+        <p>24-Hour Coding Competition</p>
+
+        <p>
+            Seats Left:
+            <strong id="hackathon-seats">30</strong>
+        </p>
+
+        <button onclick="openForm('hackathon-2026', 'Hackathon 2026')">
+            Register
+        </button>
+
+    </div>
+
+</main>
+
+
+<!-- Registration Form -->
+
+<div id="registrationForm" class="modal">
+
+    <div class="form-box">
+
+        <button class="close-btn" onclick="closeForm()">×</button>
+
+        <h2>📝 Event Registration</h2>
+
+        <p id="selectedEvent"></p>
+
+        <form id="registrationFormElement">
+
+            <label>Full Name</label>
+            <input
+                type="text"
+                id="name"
+                placeholder="Enter your full name"
+                required
+            >
+
+            <label>Email</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                required
+            >
+
+            <label>Phone Number</label>
+            <input
+                type="tel"
+                id="phone"
+                placeholder="Enter your phone number"
+                required
+            >
+
+            <label>College / Department</label>
+            <input
+                type="text"
+                id="college"
+                placeholder="Enter college or department"
+                required
+            >
+
+            <label>Year</label>
+
+            <select id="year" required>
+
+                <option value="">Select Year</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+
+            </select>
+
+            <button type="submit">
+                ✅ Complete Registration
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<footer>
+    Campus EventHub © 2026
+</footer>
+
+
+<script>
+
+let selectedEventId = "";
+
+
+// Open form
+function openForm(eventId, eventName) {
+
+    selectedEventId = eventId;
+
+    document.getElementById("selectedEvent").textContent =
+        "Registering for: " + eventName;
+
+    document.getElementById("registrationForm").style.display =
+        "flex";
+}
+
+
+// Close form
+function closeForm() {
+
+    document.getElementById("registrationForm").style.display =
+        "none";
+}
+
+
+// Submit registration
+document
+    .getElementById("registrationFormElement")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const name =
+            document.getElementById("name").value.trim();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const phone =
+            document.getElementById("phone").value.trim();
+
+        const college =
+            document.getElementById("college").value.trim();
+
+        const year =
+            document.getElementById("year").value;
+
+
+        try {
+
+            const response = await fetch("/register", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    eventId: selectedEventId,
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    college: college,
+                    year: year
+
+                })
+
+            });
+
+
+            const data = await response.json();
+
+
+            if (!response.ok) {
+
+                alert("❌ " + data.message);
+
+                return;
+            }
+
+
+            // Save registration
+            sessionStorage.setItem(
+                "registration",
+                JSON.stringify(data)
+            );
+
+
+            // Go to success page
+            window.location.href = "/success.html";
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "❌ Server connection failed. " +
+                "Make sure Node.js is running."
+            );
+
+        }
+
+    });
+
+
+// Load seats
+async function loadEvents() {
+
+    try {
+
+        const response = await fetch("/events");
+
+        const events = await response.json();
+
+
+        events.forEach(event => {
+
+            if (event.id === "ai-workshop") {
+
+                document.getElementById("ai-seats").textContent =
+                    event.seats;
+
+            }
+
+            if (event.id === "cloud-computing") {
+
+                document.getElementById("cloud-seats").textContent =
+                    event.seats;
+
+            }
+
+            if (event.id === "hackathon-2026") {
+
+                document.getElementById("hackathon-seats").textContent =
+                    event.seats;
+
+            }
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error("Could not load events:", error);
+
+    }
+
+}
+
+loadEvents();
+
+</script>
+
+</body>
+</html>
