@@ -1,0 +1,163 @@
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    color:white;
+}
+
+header{
+    text-align:center;
+    padding:40px;
+}
+
+.container{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
+    padding:20px;
+}
+
+.card{
+    width:300px;
+    background:white;
+    color:black;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    transition:0.3s;
+    text-align:center;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+}
+
+button{
+    background:#667eea;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#4f5bd5;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+}
+/* Registration Success Page */
+
+.success-container {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+}
+
+
+.success-card {
+
+    background: white;
+
+    width: 90%;
+
+    max-width: 500px;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+}
+
+
+.success-icon {
+
+    font-size: 60px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.success-card h1 {
+
+    margin-bottom: 10px;
+
+}
+
+
+.success-text {
+
+    color: #666;
+
+    margin-bottom: 25px;
+
+}
+
+
+.registration-details {
+
+    background: #f5f7fb;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    text-align: left;
+
+    margin-bottom: 25px;
+
+}
+
+
+.registration-details h2 {
+
+    text-align: center;
+
+    margin-top: 0;
+
+}
+
+
+.registration-details p {
+
+    margin: 12px 0;
+
+}
+
+
+.success-card button {
+
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+}
