@@ -5,7 +5,7 @@ const app = express();
 console.log("APP LOADED SUCCESSFULLY");
 
 // Middleware
-app.use(express.static(path.join(__dirname, "publi1c")));
+app.use(express.static(__dirname)));
 app.use(express.json());
 
 // Events
@@ -33,7 +33,7 @@ let events = [
 // Home page
 app.get("/", (req, res) => {
     // FIXED: Corrected the broken syntax layout here
-    res.sendFile(path.join(__dirname, "publi1c", "index.html"), (err) => {
+    res.sendFile(path.join(__dirname, "index.html"), (err) => {
         if (err) {
             console.error("Error sending file:", err);
             res.status(500).send("Could not load homepage.");
