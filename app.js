@@ -1,14 +1,14 @@
 const express = require("express");
-const path = require("path"); // FIXED: Added missing path module import
+const path = require("path"); 
 const app = express();
 
 console.log("APP LOADED SUCCESSFULLY");
 
-// Middleware
-app.use(express.static(__dirname)));
+// Middleware - reads files directly from your root folder
+app.use(express.static(__dirname));
 app.use(express.json());
 
-// Events
+// Events Data
 let events = [
     {
         id: "ai-workshop",
@@ -30,12 +30,11 @@ let events = [
     }
 ];
 
-// Home page
+// Home page handler - FIXED syntax error and references the root index.html
 app.get("/", (req, res) => {
-    // FIXED: Corrected the broken syntax layout here
     res.sendFile(path.join(__dirname, "index.html"), (err) => {
         if (err) {
-            console.error("Error sending file:", err);
+            console.error("Error sending index.html:", err);
             res.status(500).send("Could not load homepage.");
         }
     });
@@ -50,14 +49,12 @@ app.get("/events", (req, res) => {
 app.post("/register", (req, res) => {
     const { eventId, name, email } = req.body;
 
-    // Check required information
     if (!eventId || !name || !email) {
         return res.status(400).json({
             message: "Please enter your name and email."
         });
     }
 
-    // Find event
     const event = events.find(e => e.id === eventId);
 
     if (!event) {
@@ -66,17 +63,14 @@ app.post("/register", (req, res) => {
         });
     }
 
-    // Check seats
     if (event.seats <= 0) {
         return res.status(400).json({
             message: "Sorry! No seats are available."
         });
     }
 
-    // Reduce seat count
     event.seats--;
 
-    // Show registration in terminal
     console.log("================================");
     console.log("NEW REGISTRATION");
     console.log("Event:", event.title);
@@ -85,7 +79,6 @@ app.post("/register", (req, res) => {
     console.log("Seats remaining:", event.seats);
     console.log("================================");
 
-    // Send success response
     res.json({
         success: true,
         message: `Registration successful for ${event.title}!`
@@ -100,7 +93,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Start the server (Required for Render deployment)
+// Port configuration required for Render cloud runtime
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
