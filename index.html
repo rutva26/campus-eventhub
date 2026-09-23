@@ -17,76 +17,88 @@
     <p>Smart Event Registration Portal</p>
 </header>
 
-
-<div class="container">
+<main class="container">
 
     <!-- AI Workshop -->
     <div class="card">
-        <h2>🤖 AI Workshop</h2>
+
+        <div class="event-icon">🤖</div>
+
+        <h2>AI Workshop</h2>
+
         <p>Learn Machine Learning and Generative AI</p>
 
         <p>
             Seats Left:
-            <span id="ai-seats">20</span>
+            <strong id="ai-seats">20</strong>
         </p>
 
         <button onclick="openForm('ai-workshop', 'AI Workshop')">
             Register
         </button>
+
     </div>
 
 
     <!-- Cloud Computing -->
     <div class="card">
-        <h2>☁️ Cloud Computing</h2>
+
+        <div class="event-icon">☁️</div>
+
+        <h2>Cloud Computing</h2>
+
         <p>Learn AWS, Azure and DevOps</p>
 
         <p>
             Seats Left:
-            <span id="cloud-seats">15</span>
+            <strong id="cloud-seats">15</strong>
         </p>
 
         <button onclick="openForm('cloud-computing', 'Cloud Computing')">
             Register
         </button>
+
     </div>
 
 
     <!-- Hackathon -->
     <div class="card">
-        <h2>💻 Hackathon 2026</h2>
+
+        <div class="event-icon">💻</div>
+
+        <h2>Hackathon 2026</h2>
+
         <p>24-Hour Coding Competition</p>
 
         <p>
             Seats Left:
-            <span id="hackathon-seats">30</span>
+            <strong id="hackathon-seats">30</strong>
         </p>
 
         <button onclick="openForm('hackathon-2026', 'Hackathon 2026')">
             Register
         </button>
+
     </div>
 
-</div>
+</main>
 
 
-<!-- REGISTRATION FORM -->
+<!-- Registration Form -->
 
-<div id="registrationForm" class="form-container">
+<div id="registrationForm" class="modal">
 
     <div class="form-box">
 
-        <button class="close-btn" onclick="closeForm()">✕</button>
+        <button class="close-btn" onclick="closeForm()">×</button>
 
         <h2>📝 Event Registration</h2>
 
         <p id="selectedEvent"></p>
 
-
-        <form onsubmit="submitRegistration(event)">
+        <form id="registrationFormElement">
 
             <label>Full Name</label>
-
             <input
                 type="text"
                 id="name"
@@ -94,9 +106,7 @@
                 required
             >
 
-
             <label>Email</label>
-
             <input
                 type="email"
                 id="email"
@@ -104,9 +114,7 @@
                 required
             >
 
-
             <label>Phone Number</label>
-
             <input
                 type="tel"
                 id="phone"
@@ -114,16 +122,13 @@
                 required
             >
 
-
             <label>College / Department</label>
-
             <input
                 type="text"
                 id="college"
-                placeholder="Enter your college or department"
+                placeholder="Enter college or department"
                 required
             >
-
 
             <label>Year</label>
 
@@ -137,8 +142,7 @@
 
             </select>
 
-
-            <button type="submit" class="submit-btn">
+            <button type="submit">
                 ✅ Complete Registration
             </button>
 
@@ -159,7 +163,7 @@
 let selectedEventId = "";
 
 
-// Open registration form
+// Open form
 function openForm(eventId, eventName) {
 
     selectedEventId = eventId;
@@ -167,106 +171,104 @@ function openForm(eventId, eventName) {
     document.getElementById("selectedEvent").textContent =
         "Registering for: " + eventName;
 
-    document.getElementById("registrationForm").style.display = "flex";
-
+    document.getElementById("registrationForm").style.display =
+        "flex";
 }
 
 
 // Close form
 function closeForm() {
 
-    document.getElementById("registrationForm").style.display = "none";
-
+    document.getElementById("registrationForm").style.display =
+        "none";
 }
 
 
 // Submit registration
-async function submitRegistration(event) {
+document
+    .getElementById("registrationFormElement")
+    .addEventListener("submit", async function(event) {
 
-    event.preventDefault();
+        event.preventDefault();
 
+        const name =
+            document.getElementById("name").value.trim();
 
-    const name =
-        document.getElementById("name").value.trim();
+        const email =
+            document.getElementById("email").value.trim();
 
-    const email =
-        document.getElementById("email").value.trim();
+        const phone =
+            document.getElementById("phone").value.trim();
 
-    const phone =
-        document.getElementById("phone").value.trim();
+        const college =
+            document.getElementById("college").value.trim();
 
-    const college =
-        document.getElementById("college").value.trim();
-
-    const year =
-        document.getElementById("year").value;
-
-
-    try {
-
-        const response = await fetch("/register", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-
-                eventId: selectedEventId,
-
-                name: name,
-
-                email: email,
-
-                phone: phone,
-
-                college: college,
-
-                year: year
-
-            })
-
-        });
+        const year =
+            document.getElementById("year").value;
 
 
-        const data = await response.json();
+        try {
+
+            const response = await fetch("/register", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    eventId: selectedEventId,
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    college: college,
+                    year: year
+
+                })
+
+            });
 
 
-        if (response.ok) {
+            const data = await response.json();
 
-            alert(
-                "🎉 Registration Successful!\n\n" +
-                data.message
+
+            if (!response.ok) {
+
+                alert("❌ " + data.message);
+
+                return;
+            }
+
+
+            // Save registration
+            sessionStorage.setItem(
+                "registration",
+                JSON.stringify(data)
             );
 
-            closeForm();
 
-            document.querySelector("form").reset();
-
-            loadEvents();
-
-        } else {
-
-            alert("❌ " + data.message);
+            // Go to success page
+            window.location.href = "/success.html";
 
         }
 
-    } catch (error) {
+        catch (error) {
 
-        console.error(error);
+            console.error(error);
 
-        alert(
-            "❌ Cannot connect to the server."
-        );
+            alert(
+                "❌ Server connection failed. " +
+                "Make sure Node.js is running."
+            );
 
-    }
+        }
 
-}
+    });
 
 
-// Load latest seats
+// Load seats
 async function loadEvents() {
 
     try {
@@ -285,14 +287,12 @@ async function loadEvents() {
 
             }
 
-
             if (event.id === "cloud-computing") {
 
                 document.getElementById("cloud-seats").textContent =
                     event.seats;
 
             }
-
 
             if (event.id === "hackathon-2026") {
 
@@ -303,16 +303,16 @@ async function loadEvents() {
 
         });
 
-    } catch (error) {
+    }
 
-        console.error(error);
+    catch (error) {
+
+        console.error("Could not load events:", error);
 
     }
 
 }
 
-
-// Load seats when page opens
 loadEvents();
 
 </script>
