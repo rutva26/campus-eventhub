@@ -1,10 +1,11 @@
 const express = require("express");
+const path = require("path"); // FIXED: Added missing path module import
 const app = express();
 
 console.log("APP LOADED SUCCESSFULLY");
 
 // Middleware
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 // Events
@@ -31,7 +32,13 @@ let events = [
 
 // Home page
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/public/index.html");
+    // FIXED: Corrected the broken syntax layout here
+    res.sendFile(path.join(__dirname, "public", "index.html"), (err) => {
+        if (err) {
+            console.error("Error sending file:", err);
+            res.status(500).send("Could not load homepage.");
+        }
+    });
 });
 
 // Get all events
@@ -41,7 +48,6 @@ app.get("/events", (req, res) => {
 
 // Register for an event
 app.post("/register", (req, res) => {
-
     const { eventId, name, email } = req.body;
 
     // Check required information
@@ -89,10 +95,15 @@ app.post("/register", (req, res) => {
 // Server error handling
 app.use((err, req, res, next) => {
     console.error(err);
-
     res.status(500).json({
         message: "Something went wrong on the server."
     });
+});
+
+// Start the server (Required for Render deployment)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
 module.exports = app;
