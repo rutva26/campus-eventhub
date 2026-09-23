@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Registration Successful</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="success-container">
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            🎉
+        </div>
+
+        <h1>Registration Successful!</h1>
+
+        <p>
+            Your event registration has been completed.
+        </p>
+
+
+        <div class="registration-details">
+
+            <h2 id="eventName"></h2>
+
+            <p>
+                <strong>Name:</strong>
+                <span id="studentName"></span>
+            </p>
+
+            <p>
+                <strong>Registration ID:</strong>
+                <span id="registrationId"></span>
+            </p>
+
+            <p>
+                <strong>Seats Remaining:</strong>
+                <span id="seatsLeft"></span>
+            </p>
+
+        </div>
+
+
+        <button onclick="goHome()">
+            ← Back to Events
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const registration =
+    JSON.parse(
+        sessionStorage.getItem("registration")
+    );
+
+
+if (!registration) {
+
+    window.location.href = "/";
+
+}
+
+
+else {
+
+    document.getElementById("eventName").textContent =
+        registration.event;
+
+    document.getElementById("studentName").textContent =
+        registration.name;
+
+    document.getElementById("registrationId").textContent =
+        registration.registrationId;
+
+    document.getElementById("seatsLeft").textContent =
+        registration.seatsLeft;
+
+}
+
+
+function goHome() {
+
+    sessionStorage.removeItem("registration");
+
+    window.location.href = "/";
+
+}
+
+</script>
+
+</body>
+
+</html>
