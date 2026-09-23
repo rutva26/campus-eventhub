@@ -1,15 +1,15 @@
 const express = require("express");
-const path = require("path"); 
+const path = require("path");
+
 const app = express();
 
-console.log("APP LOADED SUCCESSFULLY");
-
-// Middleware - reads files directly from your root folder
-app.use(express.static(__dirname));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Events Data
-let events = [
+// IMPORTANT: folder name is exactly "public"
+app.use(express.static(path.join(__dirname, "public")));
+
+const events = [
     {
         id: "ai-workshop",
         title: "AI Workshop",
@@ -30,32 +30,35 @@ let events = [
     }
 ];
 
-// Home page handler - FIXED syntax error and references the root index.html
+// Home page
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"), (err) => {
-        if (err) {
-            console.error("Error sending index.html:", err);
-            res.status(500).send("Could not load homepage.");
-        }
-    });
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Get all events
+// Get events
 app.get("/events", (req, res) => {
     res.json(events);
 });
 
-// Register for an event
+// Register
 app.post("/register", (req, res) => {
-    const { eventId, name, email } = req.body;
+
+    const {
+        eventId,
+        name,
+        email,
+        phone,
+        college,
+        year
+    } = req.body;
 
     if (!eventId || !name || !email) {
         return res.status(400).json({
-            message: "Please enter your name and email."
+            message: "Please fill all required fields."
         });
     }
 
-    const event = events.find(e => e.id === eventId);
+    const event = events.find(item => item.id === eventId);
 
     if (!event) {
         return res.status(404).json({
@@ -65,38 +68,27 @@ app.post("/register", (req, res) => {
 
     if (event.seats <= 0) {
         return res.status(400).json({
-            message: "Sorry! No seats are available."
+            message: "Sorry, no seats are available."
         });
     }
 
     event.seats--;
 
-    console.log("================================");
-    console.log("NEW REGISTRATION");
-    console.log("Event:", event.title);
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Seats remaining:", event.seats);
-    console.log("================================");
+    const registrationId =
+        "EVT-2026-" +
+        String(Math.floor(Math.random() * 900) + 100);
 
     res.json({
         success: true,
-        message: `Registration successful for ${event.title}!`
+        event: event.title,
+        name: name,
+        email: email,
+        phone: phone,
+        college: college,
+        year: year,
+        registrationId: registrationId,
+        seatsLeft: event.seats
     });
-});
-
-// Server error handling
-app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).json({
-        message: "Something went wrong on the server."
-    });
-});
-
-// Port configuration required for Render cloud runtime
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
 });
 
 module.exports = app;
