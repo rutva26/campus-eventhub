@@ -1,3 +1,4 @@
+```javascript
 const express = require("express");
 const path = require("path");
 
@@ -6,8 +7,13 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// IMPORTANT: folder name is exactly "public"
+// Serve files from the public folder
 app.use(express.static(path.join(__dirname, "public")));
+
+
+// ==========================================
+// EVENTS
+// ==========================================
 
 const events = [
     {
@@ -30,17 +36,53 @@ const events = [
     }
 ];
 
-// Home page
+
+// ==========================================
+// HOME PAGE
+// ==========================================
+
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+
+    res.sendFile(
+        path.join(__dirname, "public", "index.html")
+    );
+
 });
 
-// Get events
+
+// ==========================================
+// GET EVENTS
+// ==========================================
+
 app.get("/events", (req, res) => {
+
     res.json(events);
+
 });
 
-// Register
+
+// ==========================================
+// GET GIT COMMIT ID
+// ==========================================
+
+app.get("/commit", (req, res) => {
+
+    const commitId =
+        process.env.RENDER_GIT_COMMIT ||
+        process.env.RENDER_GIT_COMMIT_SHA ||
+        "Local Development";
+
+    res.json({
+        commitId: commitId
+    });
+
+});
+
+
+// ==========================================
+// REGISTER FOR EVENT
+// ==========================================
+
 app.post("/register", (req, res) => {
 
     const {
@@ -52,43 +94,77 @@ app.post("/register", (req, res) => {
         year
     } = req.body;
 
+
+    // Check required fields
     if (!eventId || !name || !email) {
+
         return res.status(400).json({
             message: "Please fill all required fields."
         });
+
     }
 
-    const event = events.find(item => item.id === eventId);
+
+    // Find event
+    const event = events.find(
+        item => item.id === eventId
+    );
+
 
     if (!event) {
+
         return res.status(404).json({
             message: "Event not found."
         });
+
     }
 
+
+    // Check seats
     if (event.seats <= 0) {
+
         return res.status(400).json({
             message: "Sorry, no seats are available."
         });
+
     }
 
+
+    // Reduce seat count
     event.seats--;
 
+
+    // Generate registration ID
     const registrationId =
         "EVT-2026-" +
         String(Math.floor(Math.random() * 900) + 100);
 
+
+    // Send registration response
     res.json({
+
         success: true,
+
         event: event.title,
+
         name: name,
+
         email: email,
+
         phone: phone,
+
         college: college,
+
         year: year,
+
         registrationId: registrationId,
+
         seatsLeft: event.seats
+
     });
+
 });
 
+
 module.exports = app;
+```
