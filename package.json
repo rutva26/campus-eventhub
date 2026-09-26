@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node --test",
-    "lint":"eslint ."
+    "lint":"eslint .",
+    "build":"echo 'No build step required for this backend pipeline"
   },
   "keywords": [],
   "author": "",
