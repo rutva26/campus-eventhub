@@ -1,4 +1,4 @@
-```javascript
+
 const express = require("express");
 const path = require("path");
 
@@ -167,4 +167,3 @@ app.post("/register", (req, res) => {
 
 
 module.exports = app;
-```
