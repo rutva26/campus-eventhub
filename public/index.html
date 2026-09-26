@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -99,6 +100,7 @@
         <form id="registrationFormElement">
 
             <label>Full Name</label>
+
             <input
                 type="text"
                 id="name"
@@ -107,6 +109,7 @@
             >
 
             <label>Email</label>
+
             <input
                 type="email"
                 id="email"
@@ -115,6 +118,7 @@
             >
 
             <label>Phone Number</label>
+
             <input
                 type="tel"
                 id="phone"
@@ -123,6 +127,7 @@
             >
 
             <label>College / Department</label>
+
             <input
                 type="text"
                 id="college"
@@ -153,8 +158,11 @@
 </div>
 
 
+<!-- Footer -->
+
 <footer>
-    Campus EventHub © 2026
+    Campus EventHub © 2026 |
+    Commit ID: <span id="commit-id">Loading...</span>
 </footer>
 
 
@@ -163,7 +171,10 @@
 let selectedEventId = "";
 
 
-// Open form
+// ==========================================
+// Open Registration Form
+// ==========================================
+
 function openForm(eventId, eventName) {
 
     selectedEventId = eventId;
@@ -176,7 +187,10 @@ function openForm(eventId, eventName) {
 }
 
 
-// Close form
+// ==========================================
+// Close Registration Form
+// ==========================================
+
 function closeForm() {
 
     document.getElementById("registrationForm").style.display =
@@ -184,7 +198,10 @@ function closeForm() {
 }
 
 
-// Submit registration
+// ==========================================
+// Submit Registration
+// ==========================================
+
 document
     .getElementById("registrationFormElement")
     .addEventListener("submit", async function(event) {
@@ -239,6 +256,7 @@ document
                 alert("❌ " + data.message);
 
                 return;
+
             }
 
 
@@ -268,7 +286,10 @@ document
     });
 
 
-// Load seats
+// ==========================================
+// Load Available Seats
+// ==========================================
+
 async function loadEvents() {
 
     try {
@@ -287,12 +308,14 @@ async function loadEvents() {
 
             }
 
+
             if (event.id === "cloud-computing") {
 
                 document.getElementById("cloud-seats").textContent =
                     event.seats;
 
             }
+
 
             if (event.id === "hackathon-2026") {
 
@@ -307,7 +330,10 @@ async function loadEvents() {
 
     catch (error) {
 
-        console.error("Could not load events:", error);
+        console.error(
+            "Could not load events:",
+            error
+        );
 
     }
 
@@ -315,7 +341,43 @@ async function loadEvents() {
 
 loadEvents();
 
+
+// ==========================================
+// Load Git Commit ID
+// ==========================================
+
+async function loadCommitId() {
+
+    try {
+
+        const response = await fetch("/commit");
+
+        const data = await response.json();
+
+        document.getElementById("commit-id").textContent =
+            data.commitId;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Could not load commit ID:",
+            error
+        );
+
+        document.getElementById("commit-id").textContent =
+            "Unavailable";
+
+    }
+
+}
+
+loadCommitId();
+
 </script>
 
 </body>
+
 </html>
+```
